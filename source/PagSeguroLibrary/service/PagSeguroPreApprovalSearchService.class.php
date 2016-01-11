@@ -47,7 +47,7 @@ class PagSeguroPreApprovalSearchService
      */
     private static function buildFindByNotificationUrl(PagSeguroConnectionData $connectionData, $notificationCode)
     {
-        $url = $connectionData->getWebserviceUrl() . $connectionData->getResource('findUrl') . 'notification';
+        $url = $connectionData->getWebserviceUrl() . $connectionData->getResource('findUrl') . 'notifications';
         return "{$url}/{$notificationCode}/?" . $connectionData->getCredentialsUrlQuery();
     }
 

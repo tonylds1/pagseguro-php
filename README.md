@@ -21,7 +21,7 @@ A biblioteca PagSeguro em PHP é um conjunto de classes de domínio que facilita
 Requisitos
 ----------
 
- - [PHP] 5.3.3+
+ - [PHP] 5.4.27+
  - [SPL]
  - [cURL]
  - [DOM]
@@ -34,7 +34,16 @@ Instalação
  - Descompacte os arquivos em seu computador;
  - Dentro do diretório *source* existem dois diretórios: o *examples* e o *PagSeguroLibrary*. O diretório *examples* contém exemplos de chamadas utilizando a API e o diretório *PagSeguroLibrary* contém a biblioteca propriamente dita. Caso queira importar somente a biblioteca, faça upload do diretório *PagSeguroLibrary* e inclua a classe *PagSeguroLibrary.php* em seu projeto. Essa classe se encarregará de importar todas as funcionalidades da biblioteca no seu sistema.
 
-Alternativamente, é possível utilizar o Composer para carregar a biblioteca (pagseguro/php).
+Instalação via Composer
+
+- Alternativamente, é possível utilizar o [Composer] para carregar a biblioteca ([pagseguro/php]).
+```composer.json
+{
+    "require": {
+       "pagseguro/php": "@stable"
+    }
+}
+```
 
 
 Configuração
@@ -65,6 +74,9 @@ Caso tenha dúvidas ou precise de suporte, acesse nosso [fórum].
 
 Changelog
 ---------
+2.7.0
+ - Integração com serviço de consulta de Assinaturas (PreApproval) por código de notificação.
+
 2.6.0
  - Env Variables para integração com Laravel 5 #0a2c2ba
  - Wrapper para o arquivo de configuração #c1b0985
@@ -162,6 +174,7 @@ Notas
  - Certifique-se que o email e o token informados estejam relacionados a uma conta que possua o perfil de vendedor ou empresarial.
  - Certifique-se que tenha definido corretamente o charset de acordo com a codificação (ISO-8859-1 ou UTF-8) do seu sistema. Isso irá prevenir que as transações gerem possíveis erros ou quebras ou ainda que caracteres especiais possam ser apresentados de maneira diferente do habitual.
  - Para que ocorra normalmente a geração de logs, certifique-se que o diretório e o arquivo de log tenham permissões de leitura e escrita.
+ - Para a utilizar o checkout transparente, é necessária a solicitação de ativação junto com a equipe do PagSeguro, maiores informações podem ser encontradas em [Como receber pagamentos pelo PagSeguro].
 
 
 Dúvidas?
@@ -198,3 +211,6 @@ Achou e corrigiu um bug ou tem alguma feature em mente e deseja contribuir?
   [DOM]: http://php.net/manual/en/book.dom.php
   [GitHub]: https://github.com/pagseguro/php/
   [documentação oficial]: https://pagseguro.uol.com.br/v2/guia-de-integracao/tutorial-da-biblioteca-pagseguro-em-php.html
+  [Composer]: https://getcomposer.org
+  [pagseguro/php]: https://packagist.org/packages/pagseguro/php
+  [Como receber pagamentos pelo PagSeguro]: https://pagseguro.uol.com.br/receba-pagamentos.jhtml#checkout-transparent
