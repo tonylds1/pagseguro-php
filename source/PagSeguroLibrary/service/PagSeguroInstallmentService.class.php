@@ -26,15 +26,25 @@
  */
 class PagSeguroInstallmentService
 {
-
     /***
-     * Build URL for get installments.
-     * @param PagSeguroConnectionData $connectionData
-     * @return string of url for connection with webservice.
+     *
      */
-    private static function buildInstallmentURL($connectionData)
+    const SERVICE_NAME = 'installmentService';
+    /**
+     * @var
+     */
+    private static $connectionData;
+    
+    /***
+     * @param PagSeguroConnectionData $connectionData
+     * @param $amout
+     * @param $cardBrand
+     * @return string
+     */
+    private static function buildInstallmentURL(PagSeguroConnectionData $connectionData, $amout, $cardBrand)
     {
-        return $connectionData->getBaseUrl() . $connectionData->getInstallmentUrl();
+        $url = $connectionData->getWebserviceUrl() . $connectionData->getResource('url');
+        return "{$url}/?" . $connectionData->getCredentialsUrlQuery() . "&amount=" . $amout . "&cardBrand=" . $cardBrand;
     }
 
     /***
@@ -48,29 +58,21 @@ class PagSeguroInstallmentService
      * @throws Exception
      */
     public static function getInstallments(
-        $credentials,
-        $session,
+        PagSeguroCredentials $credentials,
         $amount,
         $cardBrand
     ) {
-
-        $connectionData = new PagSeguroConnectionData($credentials, 'installmentService');
-
-        $url = self::buildInstallmentURL($connectionData) .
-                "?sessionId=" . $session .
-                "&amount=". $amount .
-                "&creditCardBrand=" . $cardBrand;
-
         LogPagSeguro::info(
             "PagSeguroInstallmentService.getInstallments(".$amount.",".$cardBrand.") - begin"
         );
-
+        self::$connectionData = new PagSeguroConnectionData($credentials, self::SERVICE_NAME);
+        
         try {
             $connection = new PagSeguroHttpConnection();
             $connection->get(
-                $url,
-                $connectionData->getServiceTimeout(),
-                $connectionData->getCharset()
+                self::buildInstallmentURL(self::$connectionData, $amount, $cardBrand),
+                self::$connectionData->getServiceTimeout(),
+                self::$connectionData->getCharset()
             );
 
             $httpStatus = new PagSeguroHttpStatus($connection->getStatus());
@@ -78,21 +80,9 @@ class PagSeguroInstallmentService
             switch ($httpStatus->getType()) {
                 case 'OK':
                     $installments = PagSeguroInstallmentParser::readInstallments($connection->getResponse());
-
-                    if (is_array($installments)) {
-                        LogPagSeguro::info(
-                            "PagSeguroInstallmentService.getInstallments() - end {1}"
-                        );
-
-                    } else {
-                        LogPagSeguro::info(
-                            "PagSeguroInstallmentService.getInstallments() - error" .
-                            $installments->message
-                        );
-
-                        throw new Exception($installments->message);
-                    }
-
+                    LogPagSeguro::info(
+                        "PagSeguroInstallmentService.getInstallments() - end "
+                    );
                     break;
                 case 'BAD_REQUEST':
                     $errors = PagSeguroInstallmentParser::readErrors($connection->getResponse());
@@ -122,4 +112,6 @@ class PagSeguroInstallmentService
             throw $e;
         }
     }
+    
+    
 }

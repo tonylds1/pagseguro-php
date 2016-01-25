@@ -50,7 +50,7 @@ $PagSeguroResources['sessionService']['url'] = "/v2/sessions";
 
 //Installment service
 $PagSeguroResources['installmentService'] = array();
-$PagSeguroResources['installmentService']['url'] = "/checkout/v2/installments.json";
+$PagSeguroResources['installmentService']['url'] = "/v2/installments";
 
 // Direct payment service
 $PagSeguroResources['directPaymentService'] = array();
