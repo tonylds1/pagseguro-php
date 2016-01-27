@@ -46,13 +46,12 @@ class GetInstallments
 
             //$credentials->setAuthorizationCode("E231B2C9BCC8474DA2E260B6C8CF60D3");
 
-            $session = "97e12ffaaad04452b9e2b5e9efefd3ee";
+            //$session = "97e12ffaaad04452b9e2b5e9efefd3ee";
             $cardBrand = "visa";
 
             try {
             $installments = PagSeguroInstallmentService::getInstallments($credentials,
-                    $session,
-                    "5000.00",
+                    "5.00",
                     $cardBrand);
             } catch (Exception $e) {
                 die($e->getMessage());
@@ -71,8 +70,7 @@ class GetInstallments
 
         if ($installments) {
             echo "<h2>Installments</h2>";
-
-            foreach ($installments as $installment) {
+            foreach ($installments->getInstallments() as $installment) {
                 echo "<p> <strong> brand: </strong> ". $installment->getCardBrand()."<br> ";
                 echo "<strong> quantity: </strong> ". $installment->getQuantity()."<br> ";
                 echo "<strong> installmentAmount: </strong> ". $installment->getInstallmentAmount()."<br> ";

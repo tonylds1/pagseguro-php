@@ -26,54 +26,44 @@
  */
 class PagSeguroInstallmentParser extends PagSeguroServiceParser
 {
-
     /***
-     * @param $installment HttpGet Installments
-     * @return mixed
+     * @param $str_xml
+     * @return PagSeguroInstallment
      */
-    public static function readInstallments($str_json)
+    public static function readInstallments($str_xml)
     {
+
+        // Parser
+        $parser = new PagSeguroXmlParser($str_xml);
         
-        if (self::decode(preg_replace('/[^a-z_\:\{}\ \"\.\,\-0-9]/i', '', $str_json))) {
-            $arr = self::decode(preg_replace('/[^a-z_\:\{}\ \"\.\,\-0-9]/i', '', $str_json));
-        } else {
-            $arr = self::decode($str_json);
-        }
-
-        if (!isset($arr->errors)) {
-            $brand = key($arr->installments);
-
-            foreach ($arr->installments->$brand as $key => $installment) {
-                $installment->cardBrand = $brand;
-
-                $installments[] = new PagSeguroInstallments($installment);
+        
+        // <installment>
+        $data = $parser->getResult('installments');
+        
+        
+        // <installment><installments>
+        if (isset($data)) {
+            if (isset($data["installment"][0])) {
+                foreach ($data["installment"] as $installment) {
+                    $installments[] = new PagSeguroInstallment(
+                        $installment['cardBrand'],
+                        $installment['quantity'],
+                        $installment['amount'],
+                        $installment['totalAmount'],
+                        $installment['interestFree']
+                    );
+                }
+            } else {
+                    $installments[] = new PagSeguroInstallment(
+                        $data["installment"]['cardBrand'],
+                        $data["installment"]['quantity'],
+                        $data["installment"]['amount'],
+                        $data["installment"]['totalAmount'],
+                        $data["installment"]['interestFree']
+                    );
             }
-            
+            $installments = new PagSeguroInstallments($installments);
             return $installments;
-        } else {
-            return self::readError($arr->errors);
         }
-    }
-
-    /***
-     * @param $error Installment error
-     * @return object()
-     */
-    private static function readError($error)
-    {
-        $err = new stdClass();
-        $err->message = key($error);
-        $err->status = true;
-
-        return $err;
-    }
-
-    /***
-     * @param $installments Installments
-     * @return object installments
-     */
-    private static function decode($installments)
-    {
-        return json_decode($installments);
     }
 }

@@ -78,7 +78,7 @@ class CreateTransactionUsingInternationalCreditCard
 
         $token = "5b97542cd1524b67a9e89b3d90c1f262";
 
-        $installment = new PagSeguroInstallment(
+        $installment = new PagSeguroDirectPaymentInstallment(
             array("quantity" => 1,
                   "value" => "30.00")
             );
