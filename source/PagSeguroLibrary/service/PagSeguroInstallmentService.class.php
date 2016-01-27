@@ -34,43 +34,55 @@ class PagSeguroInstallmentService
      * @var
      */
     private static $connectionData;
-    
-    /***
-     * @param PagSeguroConnectionData $connectionData
-     * @param $amout
-     * @param $cardBrand
-     * @return string
-     */
-    private static function buildInstallmentURL(PagSeguroConnectionData $connectionData, $amout, $cardBrand)
-    {
-        $url = $connectionData->getWebserviceUrl() . $connectionData->getResource('url');
-        return "{$url}/?" . $connectionData->getCredentialsUrlQuery() . "&amount=" . $amout . "&cardBrand=" . $cardBrand;
-    }
 
     /***
+     * @param PagSeguroConnectionData $connectionData
+     * @param $amount
+     * @param $cardBrand
+     * @param $maxInstallmentNoInterest
+     * @return string
+     */
+    private static function buildInstallmentURL(
+        PagSeguroConnectionData $connectionData,
+        $amount,
+        $cardBrand = null,
+        $maxInstallmentNoInterest = null
+    ){
+        $url = $connectionData->getWebserviceUrl() . $connectionData->getResource('url');
+        $stringBuilder = "&amount=" . $amount;
+        $stringBuilder .= ($cardBrand == null) ? "" : "&cardBrand=" . $cardBrand;
+        $stringBuilder .= ($maxInstallmentNoInterest == null) ? "" :
+            "&maxInstallmentNoInterest=".$maxInstallmentNoInterest;
+        return "{$url}/?" . $connectionData->getCredentialsUrlQuery() . $stringBuilder;
+    }
+
+
+    /**
      * Get from webservice installments for direct payment.
-     * @param PagSeguroAccountCredentials $credentials
-     * @param mixed $session ID
-     * @param float $amount
-     * @param string $cardBrand
-     * @return bool|string
-     * @throws Exception|PagSeguroServiceException
+     * @param PagSeguroCredentials $credentials
+     * @param $amount
+     * @param $cardBrand
+     * @param $maxInstallmentNoInterest
+     * @return bool|PagSeguroInstallment
      * @throws Exception
+     * @throws PagSeguroServiceException
      */
     public static function getInstallments(
         PagSeguroCredentials $credentials,
         $amount,
-        $cardBrand
+        $cardBrand = null,
+        $maxInstallmentNoInterest = null
     ) {
+        $amount = PagSeguroHelper::decimalFormat($amount);
         LogPagSeguro::info(
-            "PagSeguroInstallmentService.getInstallments(".$amount.",".$cardBrand.") - begin"
+            "PagSeguroInstallmentService.getInstallments(".$amount.") - begin"
         );
         self::$connectionData = new PagSeguroConnectionData($credentials, self::SERVICE_NAME);
-        
+
         try {
             $connection = new PagSeguroHttpConnection();
             $connection->get(
-                self::buildInstallmentURL(self::$connectionData, $amount, $cardBrand),
+                self::buildInstallmentURL(self::$connectionData, $amount, $cardBrand, $maxInstallmentNoInterest),
                 self::$connectionData->getServiceTimeout(),
                 self::$connectionData->getCharset()
             );
@@ -112,6 +124,4 @@ class PagSeguroInstallmentService
             throw $e;
         }
     }
-    
-    
 }
