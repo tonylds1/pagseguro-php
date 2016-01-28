@@ -28,38 +28,38 @@ class GetInstallments
 
     public static function main()
     {
-        try {
 
-            /**
-             * #### Credentials #####
-             * Replace the parameters below with your credentials
-             * You can also get your credentials from a config file. See an example:
-             * $credentials = PagSeguroConfig::getAccountCredentials();
-             */
+      $amount = 30.00; //Required
+      $cardBrand = "visa"; //Optional
+      $maxInstallmentNoInterest = 2; //Optional
 
-            // seller authentication
-            $credentials = new PagSeguroAccountCredentials("vendedor@lojamodelo.com.br",
-                "E231B2C9BCC8474DA2E260B6C8CF60D3");
+       try {
 
-            // application authentication
-            //$credentials = PagSeguroConfig::getApplicationCredentials();
+           /**
+            * #### Credentials #####
+            * Replace the parameters below with your credentials
+            * You can also get your credentials from a config file. See an example:
+            * $credentials = new PagSeguroAccountCredentials("vendedor@lojamodelo.com.br",
+            *   "E231B2C9BCC8474DA2E260B6C8CF60D3");
+            */
 
-            //$credentials->setAuthorizationCode("E231B2C9BCC8474DA2E260B6C8CF60D3");
+           $credentials = PagSeguroConfig::getAccountCredentials();
 
-            //$session = "97e12ffaaad04452b9e2b5e9efefd3ee";
-            $cardBrand = "visa";
+           // Application authentication
+           //$credentials = PagSeguroConfig::getApplicationCredentials();
+           //$credentials->setAuthorizationCode("E231B2C9BCC8474DA2E260B6C8CF60D3");
 
-            try {
-            $installments = PagSeguroInstallmentService::getInstallments($credentials,
-                    "5.00",
-                    $cardBrand);
-            } catch (Exception $e) {
-                die($e->getMessage());
-            }
+            $installments = PagSeguroInstallmentService::getInstallments(
+                $credentials,
+                $amount,
+                $cardBrand,
+                $maxInstallmentNoInterest
+            );
 
             self::printInstallment($installments);
 
-
+        } catch (Exception $e) {
+            die($e->getMessage());
         } catch (PagSeguroServiceException $e) {
             die($e->getMessage());
         }
@@ -76,7 +76,6 @@ class GetInstallments
                 echo "<strong> installmentAmount: </strong> ". $installment->getInstallmentAmount()."<br> ";
                 echo "<strong> totalAmount: </strong> ". $installment->getTotalAmount()."<br> ";
                 echo "<strong> interestFree: </strong> ". $installment->getInterestFree()."</p> ";
-
             }
         }
       echo "<pre>";

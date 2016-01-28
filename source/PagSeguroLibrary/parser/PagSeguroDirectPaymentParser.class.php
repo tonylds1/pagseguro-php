@@ -35,7 +35,7 @@ class PagSeguroDirectPaymentParser extends PagSeguroPaymentParser
     {
 
         $data = null;
-        
+
         $data = parent::getData($payment);
 
         // paymentMode
@@ -76,6 +76,9 @@ class PagSeguroDirectPaymentParser extends PagSeguroPaymentParser
                 if ($installment->getQuantity() != null && $installment->getValue()) {
                     $data['installmentQuantity'] = $installment->getQuantity();
                     $data['installmentValue']    = PagSeguroHelper::decimalFormat($installment->getValue());
+                    if ($installment->getNoInterestInstallmentQuantity() != null ) {
+                        $data['noInterestInstallmentQuantity'] = $installment->getNoInterestInstallmentQuantity();
+                    }
                 }
             }
 
@@ -135,7 +138,7 @@ class PagSeguroDirectPaymentParser extends PagSeguroPaymentParser
             }
 
         }
-        
+
         return $data;
     }
 }

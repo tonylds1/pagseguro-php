@@ -113,9 +113,12 @@ class CreateTransactionUsingCreditCard
         $token = "5b97542cd1524b67a9e89b3d90c1f262";
 
         $installment = new PagSeguroDirectPaymentInstallment(
-            array("quantity" => 1,
-                  "value" => "30.00")
-            );
+            array(
+              "quantity" => 2,
+              "value" => "15.00",
+              "noInterestInstallmentQuantity" => 2
+            )
+        );
 
         $cardCheckout = new PagSeguroCreditCardCheckout(
             array(

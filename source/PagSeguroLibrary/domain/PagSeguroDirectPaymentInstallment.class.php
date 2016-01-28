@@ -35,6 +35,11 @@ class PagSeguroDirectPaymentInstallment
     private $value;
 
     /***
+     * No interest insallment qty.
+     */
+    private $noInterestInstallmentQuantity;
+
+    /***
      * Initializes a new instance of the PagSeguroDirectPaymentInstallment class
      * @param array $data
      */
@@ -46,6 +51,9 @@ class PagSeguroDirectPaymentInstallment
             }
             if (isset($data['value'])) {
                 $this->setValue($data['value']);
+            }
+            if (isset($data['noInterestInstallmentQuantity'])) {
+                $this->setNoInterestInstallmentQuantity($data['noInterestInstallmentQuantity']);
             }
         }
     }
@@ -84,20 +92,38 @@ class PagSeguroDirectPaymentInstallment
         return $this->value;
     }
 
+    /**
+     * @return mixed
+     */
+    public function getNoInterestInstallmentQuantity()
+    {
+        return $this->noInterestInstallmentQuantity;
+    }
+
+    /**
+     * @param mixed $noInterestInstallmentQuantity
+     */
+    public function setNoInterestInstallmentQuantity($noInterestInstallmentQuantity)
+    {
+        $this->noInterestInstallmentQuantity = $noInterestInstallmentQuantity;
+    }
+
     /***
      * Sets the installment value and quantity
      * @param $quantity int
      * @param $value float
      */
-    public function setInstallment($quantity, $value = null)
+    public function setInstallment($quantity, $value = null, $noInterestInstallmentQuantity = null)
     {
         $param = $quantity;
         if (isset($param) && is_array($param) || is_object($param)) {
-            $this->quantity = $param['quantity'];
-            $this->value = $param['value'];
+            $this->setQuantity($param['quantity']);
+            $this->setValue($param['value']);
+            $this->setNoInterestInstallmentQuantity($param["noInterestInstallmentQuantity"]);
         } else {
-            $this->quantity = $quantity;
-            $this->value = $value;
+            $this->setQuantity($quantity);
+            $this->setValue($value);
+            $this->setNoInterestInstallmentQuantity($noInterestInstallmentQuantity);
         }
     }
 }
