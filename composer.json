@@ -3,7 +3,11 @@
     "description": "Biblioteca de integração com o PagSeguro",
     "license": "Apache License 2.0",
     "autoload": {
-        "classmap": ["source/PagSeguroLibrary"]
+        "classmap": ["source/PagSeguroLibrary"],
+        "psr-4": { "": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "Pagseguro\\Test\\": "tests/Pagseguro/Tests" }
     },
     "require": {
         "php": ">=5.4.27",
@@ -11,5 +15,8 @@
         "lib-curl": "*",
         "lib-openssl": "*",
         "lib-libxml": "*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^5.4"
     }
 }
